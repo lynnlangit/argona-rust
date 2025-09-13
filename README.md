@@ -36,6 +36,101 @@ rust-agrona/
 └── agrona-examples/      # Usage examples and benchmarks
 ```
 
+### System Architecture Diagram
+
+```mermaid
+graph TB
+    %% Main Application Layer
+    APP[HFT Application]
+
+    %% Rust Agrona Crates
+    subgraph "Rust Agrona Workspace"
+        EXAMPLES[agrona-examples]
+        CONCURRENT[agrona-concurrent]
+        COLLECTIONS[agrona-collections]
+        CORE[agrona-core]
+    end
+
+    %% Core Components
+    subgraph "agrona-core"
+        DIRECT[DirectBuffer Trait]
+        MUTABLE[MutableBuffer Trait]
+        UNSAFE[UnsafeBuffer Implementation]
+        UTILS[Buffer Utilities]
+    end
+
+    subgraph "agrona-collections"
+        INTHASH[IntHashMap<V>]
+        INTSET[IntHashSet]
+        HASHING[Hashing Utilities]
+    end
+
+    subgraph "agrona-concurrent"
+        ATOMIC[AtomicBuffer]
+        RINGBUF[Ring Buffers]
+        LOCKFREE[Lock-free Structures]
+    end
+
+    %% Memory & Hardware Layer
+    subgraph "Performance Layer"
+        CACHE[CPU Caches L1/L2/L3]
+        SIMD[SIMD Instructions]
+        DIRECT_MEM[Direct Memory Access]
+    end
+
+    %% Connections
+    APP --> EXAMPLES
+    APP --> CONCURRENT
+    APP --> COLLECTIONS
+    APP --> CORE
+
+    CONCURRENT --> CORE
+    COLLECTIONS --> CORE
+
+    CORE --> DIRECT
+    CORE --> MUTABLE
+    CORE --> UNSAFE
+
+    UNSAFE --> CACHE
+    UNSAFE --> SIMD
+    UNSAFE --> DIRECT_MEM
+
+    %% Styling
+    classDef crate fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    classDef trait fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    classDef impl fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px
+    classDef perf fill:#fff3e0,stroke:#e65100,stroke-width:2px
+
+    class CORE,COLLECTIONS,CONCURRENT,EXAMPLES crate
+    class DIRECT,MUTABLE trait
+    class UNSAFE,INTHASH,INTSET,ATOMIC impl
+    class CACHE,SIMD,DIRECT_MEM perf
+```
+
+### Performance Critical Path
+
+```mermaid
+graph LR
+    subgraph "Ultra-Low Latency Data Flow"
+        INPUT[Market Data] --> PARSE[Parse ASCII]
+        PARSE --> BUFFER[Store in UnsafeBuffer]
+        BUFFER --> LOOKUP[IntHashMap Lookup]
+        LOOKUP --> PROCESS[Business Logic]
+        PROCESS --> OUTPUT[Send Orders]
+    end
+
+    %% Performance annotations
+    BUFFER -.-> |"0.64-1.12 ns"| PERF1[Buffer Ops]
+    LOOKUP -.-> |"7.36 ns"| PERF2[HashMap Lookup]
+    BUFFER -.-> |"36.2 GB/s"| PERF3[Bulk Transfer]
+
+    classDef path fill:#e3f2fd,stroke:#1565c0,stroke-width:2px
+    classDef perf fill:#c8e6c9,stroke:#2e7d32,stroke-width:1px
+
+    class INPUT,PARSE,BUFFER,LOOKUP,PROCESS,OUTPUT path
+    class PERF1,PERF2,PERF3 perf
+```
+
 ### Core Design Principles
 
 1. **Zero-Cost Abstractions**: All abstractions compile to optimal machine code
