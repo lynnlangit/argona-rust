@@ -84,7 +84,7 @@ fn string_operations_example() {
         "Hello, World!",
         "High-Frequency Trading",
         "Zero-Copy Buffer Operations",
-        "Rust Performance 🚀",
+        "Rust Performance Rocks",
     ];
 
     let mut offset = 0;
@@ -130,7 +130,7 @@ fn ascii_number_operations() {
     buffer.get_bytes(0, &mut ascii_repr).unwrap();
     println!("ASCII representation: '{}'", String::from_utf8_lossy(&ascii_repr));
 
-    let natural_numbers = [0u32, 1, 42, 123456789, u32::MAX];
+    let natural_numbers = [0u32, 1, 42, 123456789, i32::MAX as u32];
 
     println!("\nNatural number operations:");
     offset = 0;
