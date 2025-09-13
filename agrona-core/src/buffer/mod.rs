@@ -7,8 +7,6 @@ pub use mutable_buffer::*;
 pub use unsafe_buffer::*;
 
 use crate::error::{AgronaError, Result};
-use byteorder::{ByteOrder, LittleEndian, BigEndian};
-use core::cmp::Ordering;
 
 pub const STR_HEADER_LEN: usize = 4;
 

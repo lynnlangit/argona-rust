@@ -12,6 +12,7 @@ description = "High-performance lock-free data structures and concurrency utilit
 
 [dependencies]
 agrona-core = { path = "../agrona-core" }
+byteorder.workspace = true
 thiserror.workspace = true
 
 [dev-dependencies]

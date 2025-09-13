@@ -9,6 +9,4 @@ pub use buffer::*;
 pub use bit_util::*;
 pub use error::*;
 
-use core::mem;
-
 pub const CACHE_LINE_SIZE: usize = 64;

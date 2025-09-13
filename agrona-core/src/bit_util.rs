@@ -37,7 +37,7 @@ pub const fn align(size: usize, alignment: usize) -> usize {
 }
 
 #[inline(always)]
-pub const fn is_aligned(ptr: *const u8, alignment: usize) -> bool {
+pub fn is_aligned(ptr: *const u8, alignment: usize) -> bool {
     (ptr as usize) & (alignment - 1) == 0
 }
 

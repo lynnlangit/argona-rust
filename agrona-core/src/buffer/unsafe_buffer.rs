@@ -1,6 +1,6 @@
-use crate::buffer::{bounds_check, DirectBuffer, MutableBuffer, BOUNDS_CHECK_ENABLED};
+use crate::buffer::{bounds_check, DirectBuffer, MutableBuffer};
 use crate::error::{AgronaError, Result};
-use byteorder::{ByteOrder, LittleEndian};
+use byteorder::ByteOrder;
 use core::ptr;
 use core::slice;
 
@@ -115,10 +115,22 @@ impl DirectBuffer for UnsafeBuffer {
         Ok(unsafe { self.get_unchecked(index) })
     }
 
+    fn get_u16(&self, index: usize) -> Result<u16> {
+        self.check_bounds(index, 2)?;
+        let bytes = unsafe { slice::from_raw_parts(self.data.add(index), 2) };
+        Ok(u16::from_le_bytes([bytes[0], bytes[1]]))
+    }
+
     fn get_u16_with_order<B: ByteOrder>(&self, index: usize, _byte_order: B) -> Result<u16> {
         self.check_bounds(index, 2)?;
         let bytes = unsafe { slice::from_raw_parts(self.data.add(index), 2) };
         Ok(B::read_u16(bytes))
+    }
+
+    fn get_i16(&self, index: usize) -> Result<i16> {
+        self.check_bounds(index, 2)?;
+        let bytes = unsafe { slice::from_raw_parts(self.data.add(index), 2) };
+        Ok(i16::from_le_bytes([bytes[0], bytes[1]]))
     }
 
     fn get_i16_with_order<B: ByteOrder>(&self, index: usize, _byte_order: B) -> Result<i16> {
@@ -127,10 +139,22 @@ impl DirectBuffer for UnsafeBuffer {
         Ok(B::read_i16(bytes))
     }
 
+    fn get_u32(&self, index: usize) -> Result<u32> {
+        self.check_bounds(index, 4)?;
+        let bytes = unsafe { slice::from_raw_parts(self.data.add(index), 4) };
+        Ok(u32::from_le_bytes([bytes[0], bytes[1], bytes[2], bytes[3]]))
+    }
+
     fn get_u32_with_order<B: ByteOrder>(&self, index: usize, _byte_order: B) -> Result<u32> {
         self.check_bounds(index, 4)?;
         let bytes = unsafe { slice::from_raw_parts(self.data.add(index), 4) };
         Ok(B::read_u32(bytes))
+    }
+
+    fn get_i32(&self, index: usize) -> Result<i32> {
+        self.check_bounds(index, 4)?;
+        let bytes = unsafe { slice::from_raw_parts(self.data.add(index), 4) };
+        Ok(i32::from_le_bytes([bytes[0], bytes[1], bytes[2], bytes[3]]))
     }
 
     fn get_i32_with_order<B: ByteOrder>(&self, index: usize, _byte_order: B) -> Result<i32> {
@@ -139,10 +163,22 @@ impl DirectBuffer for UnsafeBuffer {
         Ok(B::read_i32(bytes))
     }
 
+    fn get_u64(&self, index: usize) -> Result<u64> {
+        self.check_bounds(index, 8)?;
+        let bytes = unsafe { slice::from_raw_parts(self.data.add(index), 8) };
+        Ok(u64::from_le_bytes([bytes[0], bytes[1], bytes[2], bytes[3], bytes[4], bytes[5], bytes[6], bytes[7]]))
+    }
+
     fn get_u64_with_order<B: ByteOrder>(&self, index: usize, _byte_order: B) -> Result<u64> {
         self.check_bounds(index, 8)?;
         let bytes = unsafe { slice::from_raw_parts(self.data.add(index), 8) };
         Ok(B::read_u64(bytes))
+    }
+
+    fn get_i64(&self, index: usize) -> Result<i64> {
+        self.check_bounds(index, 8)?;
+        let bytes = unsafe { slice::from_raw_parts(self.data.add(index), 8) };
+        Ok(i64::from_le_bytes([bytes[0], bytes[1], bytes[2], bytes[3], bytes[4], bytes[5], bytes[6], bytes[7]]))
     }
 
     fn get_i64_with_order<B: ByteOrder>(&self, index: usize, _byte_order: B) -> Result<i64> {
@@ -151,10 +187,22 @@ impl DirectBuffer for UnsafeBuffer {
         Ok(B::read_i64(bytes))
     }
 
+    fn get_f32(&self, index: usize) -> Result<f32> {
+        self.check_bounds(index, 4)?;
+        let bytes = unsafe { slice::from_raw_parts(self.data.add(index), 4) };
+        Ok(f32::from_le_bytes([bytes[0], bytes[1], bytes[2], bytes[3]]))
+    }
+
     fn get_f32_with_order<B: ByteOrder>(&self, index: usize, _byte_order: B) -> Result<f32> {
         self.check_bounds(index, 4)?;
         let bytes = unsafe { slice::from_raw_parts(self.data.add(index), 4) };
         Ok(B::read_f32(bytes))
+    }
+
+    fn get_f64(&self, index: usize) -> Result<f64> {
+        self.check_bounds(index, 8)?;
+        let bytes = unsafe { slice::from_raw_parts(self.data.add(index), 8) };
+        Ok(f64::from_le_bytes([bytes[0], bytes[1], bytes[2], bytes[3], bytes[4], bytes[5], bytes[6], bytes[7]]))
     }
 
     fn get_f64_with_order<B: ByteOrder>(&self, index: usize, _byte_order: B) -> Result<f64> {
@@ -323,6 +371,78 @@ impl MutableBuffer for UnsafeBuffer {
         Ok(())
     }
 
+    fn put_u16(&mut self, index: usize, value: u16) -> Result<()> {
+        self.check_bounds(index, 2)?;
+        let bytes = value.to_le_bytes();
+        unsafe {
+            ptr::copy_nonoverlapping(bytes.as_ptr(), self.data.add(index), 2);
+        }
+        Ok(())
+    }
+
+    fn put_i16(&mut self, index: usize, value: i16) -> Result<()> {
+        self.check_bounds(index, 2)?;
+        let bytes = value.to_le_bytes();
+        unsafe {
+            ptr::copy_nonoverlapping(bytes.as_ptr(), self.data.add(index), 2);
+        }
+        Ok(())
+    }
+
+    fn put_u32(&mut self, index: usize, value: u32) -> Result<()> {
+        self.check_bounds(index, 4)?;
+        let bytes = value.to_le_bytes();
+        unsafe {
+            ptr::copy_nonoverlapping(bytes.as_ptr(), self.data.add(index), 4);
+        }
+        Ok(())
+    }
+
+    fn put_i32(&mut self, index: usize, value: i32) -> Result<()> {
+        self.check_bounds(index, 4)?;
+        let bytes = value.to_le_bytes();
+        unsafe {
+            ptr::copy_nonoverlapping(bytes.as_ptr(), self.data.add(index), 4);
+        }
+        Ok(())
+    }
+
+    fn put_u64(&mut self, index: usize, value: u64) -> Result<()> {
+        self.check_bounds(index, 8)?;
+        let bytes = value.to_le_bytes();
+        unsafe {
+            ptr::copy_nonoverlapping(bytes.as_ptr(), self.data.add(index), 8);
+        }
+        Ok(())
+    }
+
+    fn put_i64(&mut self, index: usize, value: i64) -> Result<()> {
+        self.check_bounds(index, 8)?;
+        let bytes = value.to_le_bytes();
+        unsafe {
+            ptr::copy_nonoverlapping(bytes.as_ptr(), self.data.add(index), 8);
+        }
+        Ok(())
+    }
+
+    fn put_f32(&mut self, index: usize, value: f32) -> Result<()> {
+        self.check_bounds(index, 4)?;
+        let bytes = value.to_le_bytes();
+        unsafe {
+            ptr::copy_nonoverlapping(bytes.as_ptr(), self.data.add(index), 4);
+        }
+        Ok(())
+    }
+
+    fn put_f64(&mut self, index: usize, value: f64) -> Result<()> {
+        self.check_bounds(index, 8)?;
+        let bytes = value.to_le_bytes();
+        unsafe {
+            ptr::copy_nonoverlapping(bytes.as_ptr(), self.data.add(index), 8);
+        }
+        Ok(())
+    }
+
     fn put_u16_with_order<B: ByteOrder>(&mut self, index: usize, value: u16, _byte_order: B) -> Result<()> {
         self.check_bounds(index, 2)?;
         let bytes = unsafe { slice::from_raw_parts_mut(self.data.add(index), 2) };
@@ -451,7 +571,7 @@ impl MutableBuffer for UnsafeBuffer {
 
         let mut remaining = value as u64;
         let mut current_index = end_exclusive;
-        let start_index = current_index;
+        let _start_index = current_index;
 
         loop {
             if current_index == 0 {

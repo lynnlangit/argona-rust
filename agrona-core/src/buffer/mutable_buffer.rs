@@ -1,6 +1,6 @@
 use crate::buffer::DirectBuffer;
 use crate::error::{AgronaError, Result};
-use byteorder::{ByteOrder, LittleEndian};
+use byteorder::ByteOrder;
 
 pub trait MutableBuffer: DirectBuffer {
     fn is_expandable(&self) -> bool {
@@ -12,52 +12,21 @@ pub trait MutableBuffer: DirectBuffer {
     fn put_u8(&mut self, index: usize, value: u8) -> Result<()>;
     fn put_i8(&mut self, index: usize, value: i8) -> Result<()>;
 
-    fn put_u16(&mut self, index: usize, value: u16) -> Result<()> {
-        self.put_u16_with_order(index, value, LittleEndian)
-    }
-
+    fn put_u16(&mut self, index: usize, value: u16) -> Result<()>;
     fn put_u16_with_order<B: ByteOrder>(&mut self, index: usize, value: u16, _byte_order: B) -> Result<()>;
-
-    fn put_i16(&mut self, index: usize, value: i16) -> Result<()> {
-        self.put_i16_with_order(index, value, LittleEndian)
-    }
-
+    fn put_i16(&mut self, index: usize, value: i16) -> Result<()>;
     fn put_i16_with_order<B: ByteOrder>(&mut self, index: usize, value: i16, _byte_order: B) -> Result<()>;
-
-    fn put_u32(&mut self, index: usize, value: u32) -> Result<()> {
-        self.put_u32_with_order(index, value, LittleEndian)
-    }
-
+    fn put_u32(&mut self, index: usize, value: u32) -> Result<()>;
     fn put_u32_with_order<B: ByteOrder>(&mut self, index: usize, value: u32, _byte_order: B) -> Result<()>;
-
-    fn put_i32(&mut self, index: usize, value: i32) -> Result<()> {
-        self.put_i32_with_order(index, value, LittleEndian)
-    }
-
+    fn put_i32(&mut self, index: usize, value: i32) -> Result<()>;
     fn put_i32_with_order<B: ByteOrder>(&mut self, index: usize, value: i32, _byte_order: B) -> Result<()>;
-
-    fn put_u64(&mut self, index: usize, value: u64) -> Result<()> {
-        self.put_u64_with_order(index, value, LittleEndian)
-    }
-
+    fn put_u64(&mut self, index: usize, value: u64) -> Result<()>;
     fn put_u64_with_order<B: ByteOrder>(&mut self, index: usize, value: u64, _byte_order: B) -> Result<()>;
-
-    fn put_i64(&mut self, index: usize, value: i64) -> Result<()> {
-        self.put_i64_with_order(index, value, LittleEndian)
-    }
-
+    fn put_i64(&mut self, index: usize, value: i64) -> Result<()>;
     fn put_i64_with_order<B: ByteOrder>(&mut self, index: usize, value: i64, _byte_order: B) -> Result<()>;
-
-    fn put_f32(&mut self, index: usize, value: f32) -> Result<()> {
-        self.put_f32_with_order(index, value, LittleEndian)
-    }
-
+    fn put_f32(&mut self, index: usize, value: f32) -> Result<()>;
     fn put_f32_with_order<B: ByteOrder>(&mut self, index: usize, value: f32, _byte_order: B) -> Result<()>;
-
-    fn put_f64(&mut self, index: usize, value: f64) -> Result<()> {
-        self.put_f64_with_order(index, value, LittleEndian)
-    }
-
+    fn put_f64(&mut self, index: usize, value: f64) -> Result<()>;
     fn put_f64_with_order<B: ByteOrder>(&mut self, index: usize, value: f64, _byte_order: B) -> Result<()>;
 
     fn put_bytes(&mut self, index: usize, src: &[u8]) -> Result<()>;

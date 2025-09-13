@@ -1,6 +1,6 @@
 use agrona_core::buffer::{DirectBuffer, MutableBuffer, UnsafeBuffer};
 use agrona_core::error::Result;
-use byteorder::{ByteOrder, LittleEndian};
+use byteorder::ByteOrder;
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::ptr;
 
@@ -48,7 +48,7 @@ impl AtomicBuffer {
 
     #[inline]
     pub fn get_volatile_u32(&self, index: usize) -> Result<u32> {
-        self.get_volatile_u32_with_order(index, LittleEndian)
+        self.get_volatile_u32_with_order(index, byteorder::LE)
     }
 
     #[inline]
@@ -67,7 +67,7 @@ impl AtomicBuffer {
 
     #[inline]
     pub fn put_volatile_u32(&mut self, index: usize, value: u32) -> Result<()> {
-        self.put_volatile_u32_with_order(index, value, LittleEndian)
+        self.put_volatile_u32_with_order(index, value, byteorder::LE)
     }
 
     #[inline]
@@ -87,7 +87,7 @@ impl AtomicBuffer {
 
     #[inline]
     pub fn get_volatile_u64(&self, index: usize) -> Result<u64> {
-        self.get_volatile_u64_with_order(index, LittleEndian)
+        self.get_volatile_u64_with_order(index, byteorder::LE)
     }
 
     #[inline]
@@ -106,7 +106,7 @@ impl AtomicBuffer {
 
     #[inline]
     pub fn put_volatile_u64(&mut self, index: usize, value: u64) -> Result<()> {
-        self.put_volatile_u64_with_order(index, value, LittleEndian)
+        self.put_volatile_u64_with_order(index, value, byteorder::LE)
     }
 
     #[inline]
@@ -167,7 +167,7 @@ impl AtomicBuffer {
 
     #[inline]
     pub fn put_ordered_u32(&mut self, index: usize, value: u32) -> Result<()> {
-        self.put_ordered_u32_with_order(index, value, LittleEndian)
+        self.put_ordered_u32_with_order(index, value, byteorder::LE)
     }
 
     #[inline]
@@ -188,7 +188,7 @@ impl AtomicBuffer {
 
     #[inline]
     pub fn put_ordered_u64(&mut self, index: usize, value: u64) -> Result<()> {
-        self.put_ordered_u64_with_order(index, value, LittleEndian)
+        self.put_ordered_u64_with_order(index, value, byteorder::LE)
     }
 
     #[inline]
