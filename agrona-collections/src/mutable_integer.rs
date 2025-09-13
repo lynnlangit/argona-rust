@@ -272,11 +272,11 @@ mod tests {
         let mut ml = MutableLong::new(1234567890123456789);
         assert_eq!(ml.get(), 1234567890123456789);
 
-        ml.set(-9876543210987654321);
-        assert_eq!(ml.get(), -9876543210987654321);
+        ml.set(-987654321098765432);
+        assert_eq!(ml.get(), -987654321098765432);
 
-        assert_eq!(ml.increment(), -9876543210987654320);
-        assert_eq!(ml.get(), -9876543210987654320);
+        assert_eq!(ml.increment(), -987654321098765431);
+        assert_eq!(ml.get(), -987654321098765431);
     }
 
     #[test]

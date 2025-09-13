@@ -301,16 +301,16 @@ mod tests {
         assert_eq!(map.insert(2, "two".to_string()), None);
         assert_eq!(map.len(), 2);
 
-        assert_eq!(map.get(&1), Some(&"one".to_string()));
-        assert_eq!(map.get(&2), Some(&"two".to_string()));
-        assert_eq!(map.get(&3), None);
+        assert_eq!(map.get(1), Some(&"one".to_string()));
+        assert_eq!(map.get(2), Some(&"two".to_string()));
+        assert_eq!(map.get(3), None);
 
         assert_eq!(map.insert(1, "ONE".to_string()), Some("one".to_string()));
         assert_eq!(map.len(), 2);
 
-        assert_eq!(map.remove(&1), Some("ONE".to_string()));
+        assert_eq!(map.remove(1), Some("ONE".to_string()));
         assert_eq!(map.len(), 1);
-        assert_eq!(map.get(&1), None);
+        assert_eq!(map.get(1), None);
     }
 
     #[test]
@@ -323,7 +323,7 @@ mod tests {
 
         assert_eq!(map.len(), 10);
         for i in 0..10 {
-            assert_eq!(map.get(&i), Some(&(i * 2)));
+            assert_eq!(map.get(i), Some(&(i * 2)));
         }
     }
 
