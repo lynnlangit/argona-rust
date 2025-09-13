@@ -151,7 +151,7 @@ impl IntHashSet {
         }
     }
 
-    pub fn iter(&self) -> IntHashSetIter {
+    pub fn iter(&self) -> IntHashSetIter<'_> {
         IntHashSetIter {
             set: self,
             index: 0,

@@ -1,4 +1,4 @@
-use core::hash::{Hash, Hasher};
+use core::hash::Hasher;
 
 #[inline(always)]
 pub fn fast_int_hash(value: i32) -> u32 {

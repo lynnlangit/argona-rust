@@ -272,7 +272,7 @@ fn test_intmap_vs_hashmap() {
     let start = Instant::now();
     let mut sum = 0i64;
     for i in 0..TEST_ITERATIONS {
-        if let Some(&value) = agrona_map.get(&(i as i32)) {
+        if let Some(&value) = agrona_map.get(i as i32) {
             sum = sum.wrapping_add(value as i64);
         }
     }
@@ -592,7 +592,7 @@ fn test_concurrent_counter() {
     let expected_count = (num_threads * increments_per_thread) as u64;
 
     println!("  Total time: {:?}", total_time);
-    println!("  Average thread time: {:?}", total_thread_time / num_threads);
+    println!("  Average thread time: {:?}", total_thread_time / num_threads as u32);
     println!("  Operations/second: {:.0}", expected_count as f64 / total_time.as_secs_f64());
     println!("  Final count: {} (expected: {})", final_count, expected_count);
     assert_eq!(final_count, expected_count);

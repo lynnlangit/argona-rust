@@ -1,7 +1,7 @@
 use agrona_core::buffer::{DirectBuffer, MutableBuffer, UnsafeBuffer};
 use agrona_core::error::Result;
 use byteorder::ByteOrder;
-use std::sync::atomic::{AtomicU64, Ordering};
+use std::sync::atomic::{AtomicU32, AtomicU64, Ordering};
 use std::ptr;
 
 pub struct AtomicBuffer {
@@ -48,78 +48,38 @@ impl AtomicBuffer {
 
     #[inline]
     pub fn get_volatile_u32(&self, index: usize) -> Result<u32> {
-        self.get_volatile_u32_with_order(index, byteorder::LE)
-    }
-
-    #[inline]
-    pub fn get_volatile_u32_with_order<B: ByteOrder>(&self, index: usize, _byte_order: B) -> Result<u32> {
         self.bounds_check(index, 4)?;
         unsafe {
             let ptr = self.inner.as_ptr().add(index) as *const u32;
-            let value = ptr::read_volatile(ptr);
-            Ok(if B::NATIVE_ENDIAN {
-                value
-            } else {
-                value.swap_bytes()
-            })
+            Ok(ptr::read_volatile(ptr))
         }
     }
 
     #[inline]
     pub fn put_volatile_u32(&mut self, index: usize, value: u32) -> Result<()> {
-        self.put_volatile_u32_with_order(index, value, byteorder::LE)
-    }
-
-    #[inline]
-    pub fn put_volatile_u32_with_order<B: ByteOrder>(&mut self, index: usize, value: u32, _byte_order: B) -> Result<()> {
         self.bounds_check(index, 4)?;
         unsafe {
             let ptr = self.inner.as_mut_ptr().add(index) as *mut u32;
-            let write_value = if B::NATIVE_ENDIAN {
-                value
-            } else {
-                value.swap_bytes()
-            };
-            ptr::write_volatile(ptr, write_value);
+            ptr::write_volatile(ptr, value);
         }
         Ok(())
     }
 
     #[inline]
     pub fn get_volatile_u64(&self, index: usize) -> Result<u64> {
-        self.get_volatile_u64_with_order(index, byteorder::LE)
-    }
-
-    #[inline]
-    pub fn get_volatile_u64_with_order<B: ByteOrder>(&self, index: usize, _byte_order: B) -> Result<u64> {
         self.bounds_check(index, 8)?;
         unsafe {
             let ptr = self.inner.as_ptr().add(index) as *const u64;
-            let value = ptr::read_volatile(ptr);
-            Ok(if B::NATIVE_ENDIAN {
-                value
-            } else {
-                value.swap_bytes()
-            })
+            Ok(ptr::read_volatile(ptr))
         }
     }
 
     #[inline]
     pub fn put_volatile_u64(&mut self, index: usize, value: u64) -> Result<()> {
-        self.put_volatile_u64_with_order(index, value, byteorder::LE)
-    }
-
-    #[inline]
-    pub fn put_volatile_u64_with_order<B: ByteOrder>(&mut self, index: usize, value: u64, _byte_order: B) -> Result<()> {
         self.bounds_check(index, 8)?;
         unsafe {
             let ptr = self.inner.as_mut_ptr().add(index) as *mut u64;
-            let write_value = if B::NATIVE_ENDIAN {
-                value
-            } else {
-                value.swap_bytes()
-            };
-            ptr::write_volatile(ptr, write_value);
+            ptr::write_volatile(ptr, value);
         }
         Ok(())
     }
@@ -167,42 +127,22 @@ impl AtomicBuffer {
 
     #[inline]
     pub fn put_ordered_u32(&mut self, index: usize, value: u32) -> Result<()> {
-        self.put_ordered_u32_with_order(index, value, byteorder::LE)
-    }
-
-    #[inline]
-    pub fn put_ordered_u32_with_order<B: ByteOrder>(&mut self, index: usize, value: u32, _byte_order: B) -> Result<()> {
         self.bounds_check(index, 4)?;
         unsafe {
-            let ptr = self.inner.as_mut_ptr().add(index) as *mut AtomicU64;
+            let ptr = self.inner.as_mut_ptr().add(index) as *mut AtomicU32;
             let atomic_ref = &*ptr;
-            let write_value = if B::NATIVE_ENDIAN {
-                value as u64
-            } else {
-                value.swap_bytes() as u64
-            };
-            atomic_ref.store(write_value, Ordering::Release);
+            atomic_ref.store(value, Ordering::Release);
         }
         Ok(())
     }
 
     #[inline]
     pub fn put_ordered_u64(&mut self, index: usize, value: u64) -> Result<()> {
-        self.put_ordered_u64_with_order(index, value, byteorder::LE)
-    }
-
-    #[inline]
-    pub fn put_ordered_u64_with_order<B: ByteOrder>(&mut self, index: usize, value: u64, _byte_order: B) -> Result<()> {
         self.bounds_check(index, 8)?;
         unsafe {
             let ptr = self.inner.as_mut_ptr().add(index) as *mut AtomicU64;
             let atomic_ref = &*ptr;
-            let write_value = if B::NATIVE_ENDIAN {
-                value
-            } else {
-                value.swap_bytes()
-            };
-            atomic_ref.store(write_value, Ordering::Release);
+            atomic_ref.store(value, Ordering::Release);
         }
         Ok(())
     }
@@ -235,32 +175,64 @@ impl DirectBuffer for AtomicBuffer {
         self.inner.get_i8(index)
     }
 
+    fn get_u16(&self, index: usize) -> Result<u16> {
+        self.inner.get_u16(index)
+    }
+
     fn get_u16_with_order<B: ByteOrder>(&self, index: usize, byte_order: B) -> Result<u16> {
         self.inner.get_u16_with_order(index, byte_order)
+    }
+
+    fn get_i16(&self, index: usize) -> Result<i16> {
+        self.inner.get_i16(index)
     }
 
     fn get_i16_with_order<B: ByteOrder>(&self, index: usize, byte_order: B) -> Result<i16> {
         self.inner.get_i16_with_order(index, byte_order)
     }
 
+    fn get_u32(&self, index: usize) -> Result<u32> {
+        self.inner.get_u32(index)
+    }
+
     fn get_u32_with_order<B: ByteOrder>(&self, index: usize, byte_order: B) -> Result<u32> {
         self.inner.get_u32_with_order(index, byte_order)
+    }
+
+    fn get_i32(&self, index: usize) -> Result<i32> {
+        self.inner.get_i32(index)
     }
 
     fn get_i32_with_order<B: ByteOrder>(&self, index: usize, byte_order: B) -> Result<i32> {
         self.inner.get_i32_with_order(index, byte_order)
     }
 
+    fn get_u64(&self, index: usize) -> Result<u64> {
+        self.inner.get_u64(index)
+    }
+
     fn get_u64_with_order<B: ByteOrder>(&self, index: usize, byte_order: B) -> Result<u64> {
         self.inner.get_u64_with_order(index, byte_order)
+    }
+
+    fn get_i64(&self, index: usize) -> Result<i64> {
+        self.inner.get_i64(index)
     }
 
     fn get_i64_with_order<B: ByteOrder>(&self, index: usize, byte_order: B) -> Result<i64> {
         self.inner.get_i64_with_order(index, byte_order)
     }
 
+    fn get_f32(&self, index: usize) -> Result<f32> {
+        self.inner.get_f32(index)
+    }
+
     fn get_f32_with_order<B: ByteOrder>(&self, index: usize, byte_order: B) -> Result<f32> {
         self.inner.get_f32_with_order(index, byte_order)
+    }
+
+    fn get_f64(&self, index: usize) -> Result<f64> {
+        self.inner.get_f64(index)
     }
 
     fn get_f64_with_order<B: ByteOrder>(&self, index: usize, byte_order: B) -> Result<f64> {
@@ -309,32 +281,64 @@ impl MutableBuffer for AtomicBuffer {
         self.inner.put_i8(index, value)
     }
 
+    fn put_u16(&mut self, index: usize, value: u16) -> Result<()> {
+        self.inner.put_u16(index, value)
+    }
+
     fn put_u16_with_order<B: ByteOrder>(&mut self, index: usize, value: u16, byte_order: B) -> Result<()> {
         self.inner.put_u16_with_order(index, value, byte_order)
+    }
+
+    fn put_i16(&mut self, index: usize, value: i16) -> Result<()> {
+        self.inner.put_i16(index, value)
     }
 
     fn put_i16_with_order<B: ByteOrder>(&mut self, index: usize, value: i16, byte_order: B) -> Result<()> {
         self.inner.put_i16_with_order(index, value, byte_order)
     }
 
+    fn put_u32(&mut self, index: usize, value: u32) -> Result<()> {
+        self.inner.put_u32(index, value)
+    }
+
     fn put_u32_with_order<B: ByteOrder>(&mut self, index: usize, value: u32, byte_order: B) -> Result<()> {
         self.inner.put_u32_with_order(index, value, byte_order)
+    }
+
+    fn put_i32(&mut self, index: usize, value: i32) -> Result<()> {
+        self.inner.put_i32(index, value)
     }
 
     fn put_i32_with_order<B: ByteOrder>(&mut self, index: usize, value: i32, byte_order: B) -> Result<()> {
         self.inner.put_i32_with_order(index, value, byte_order)
     }
 
+    fn put_u64(&mut self, index: usize, value: u64) -> Result<()> {
+        self.inner.put_u64(index, value)
+    }
+
     fn put_u64_with_order<B: ByteOrder>(&mut self, index: usize, value: u64, byte_order: B) -> Result<()> {
         self.inner.put_u64_with_order(index, value, byte_order)
+    }
+
+    fn put_i64(&mut self, index: usize, value: i64) -> Result<()> {
+        self.inner.put_i64(index, value)
     }
 
     fn put_i64_with_order<B: ByteOrder>(&mut self, index: usize, value: i64, byte_order: B) -> Result<()> {
         self.inner.put_i64_with_order(index, value, byte_order)
     }
 
+    fn put_f32(&mut self, index: usize, value: f32) -> Result<()> {
+        self.inner.put_f32(index, value)
+    }
+
     fn put_f32_with_order<B: ByteOrder>(&mut self, index: usize, value: f32, byte_order: B) -> Result<()> {
         self.inner.put_f32_with_order(index, value, byte_order)
+    }
+
+    fn put_f64(&mut self, index: usize, value: f64) -> Result<()> {
+        self.inner.put_f64(index, value)
     }
 
     fn put_f64_with_order<B: ByteOrder>(&mut self, index: usize, value: f64, byte_order: B) -> Result<()> {

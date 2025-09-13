@@ -181,21 +181,21 @@ impl<V: Clone + Default> IntHashMap<V> {
         }
     }
 
-    pub fn iter(&self) -> IntHashMapIter<V> {
+    pub fn iter(&self) -> IntHashMapIter<'_, V> {
         IntHashMapIter {
             map: self,
             index: 0,
         }
     }
 
-    pub fn keys(&self) -> IntHashMapKeys<V> {
+    pub fn keys(&self) -> IntHashMapKeys<'_, V> {
         IntHashMapKeys {
             map: self,
             index: 0,
         }
     }
 
-    pub fn values(&self) -> IntHashMapValues<V> {
+    pub fn values(&self) -> IntHashMapValues<'_, V> {
         IntHashMapValues {
             map: self,
             index: 0,

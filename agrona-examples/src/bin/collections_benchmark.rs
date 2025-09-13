@@ -35,7 +35,7 @@ fn hashmap_comparison() {
     let start = Instant::now();
     let mut lookup_count = 0;
     for i in 0..ITERATIONS {
-        if agrona_map.get(&(i as i32)).is_some() {
+        if agrona_map.get(i as i32).is_some() {
             lookup_count += 1;
         }
     }
@@ -154,7 +154,7 @@ fn hashset_comparison() {
 
     println!("\nIteration test:");
     let start = Instant::now();
-    let agrona_sum: i64 = agrona_set.iter().map(|x| *x as i64).sum();
+    let agrona_sum: i64 = agrona_set.iter().map(|x| x as i64).sum();
     let agrona_iter_time = start.elapsed();
 
     let start = Instant::now();
