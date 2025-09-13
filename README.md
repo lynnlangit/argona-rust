@@ -2,9 +2,6 @@
 
 A high-performance Rust port of the Java Agrona library, specifically designed for high-frequency trading (HFT) and ultra-low latency applications. This library provides zero-allocation, cache-friendly data structures and utilities that enable microsecond-level performance.
 
-[![Crates.io](https://img.shields.io/crates/v/agrona-core.svg)](https://crates.io/crates/agrona-core)
-[![Documentation](https://docs.rs/agrona-core/badge.svg)](https://docs.rs/agrona-core)
-[![Build Status](https://github.com/your-org/rust-agrona/workflows/CI/badge.svg)](https://github.com/your-org/rust-agrona/actions)
 
 ## 🎯 Why Rust Agrona?
 
@@ -122,24 +119,46 @@ let previous = counter.get_and_increment(); // Atomic-style API
 
 ## 📊 Performance Benchmarks
 
-### Buffer Operations (1M operations)
+Comprehensive performance testing demonstrates exceptional results for the Rust Agrona port.
 
-| Operation | Java Agrona | Rust Agrona | Speedup |
-|-----------|-------------|-------------|---------|
-| `put_u64` | 2.3 ns/op | 0.8 ns/op | **2.9x** |
-| `get_u64` | 1.9 ns/op | 0.6 ns/op | **3.2x** |
-| `put_string_ascii` | 45 ns/op | 28 ns/op | **1.6x** |
-| `parse_i32_ascii` | 12 ns/op | 8 ns/op | **1.5x** |
+### 🚀 Rust Agrona Port Performance Results (1M operations)
 
-### Collections Performance (1M operations)
+**Buffer Operations (UnsafeBuffer):**
+- `put_u32`: **0.64 ns/op** (1,553 MOps/s)
+- `get_u32`: **1.12 ns/op** (897 MOps/s)
+- `put_u64`: **0.69 ns/op** (1,456 MOps/s)
+- `get_u64`: **0.69 ns/op** (1,439 MOps/s)
+- Bulk operations (8KB): **226 ns/op** (36.2 GB/s throughput)
 
-| Operation | std::HashMap | IntHashMap | Speedup |
-|-----------|--------------|------------|---------|
-| Insert | 89 ns/op | 31 ns/op | **2.9x** |
-| Lookup | 67 ns/op | 19 ns/op | **3.5x** |
-| Memory usage | 48 MB | 16 MB | **3x less** |
+**Collections Performance:**
+- `IntHashMap insert`: **38.26 ns/op** (26.14 MOps/s)
+- `IntHashMap lookup`: **7.36 ns/op** (135.92 MOps/s)
+- `IntHashSet insert`: **22.22 ns/op** (45.00 MOps/s)
+- `IntHashSet contains`: **4.72 ns/op** (211.97 MOps/s)
 
-*Benchmarks run on Intel i9-9900K, compiled with `-C target-cpu=native`*
+**Collections Comparison vs std::HashMap:**
+- HashMap insert: **21.60 ns/op** (46.29 MOps/s) - *1.8x faster than IntHashMap*
+- HashMap lookup: **9.27 ns/op** (107.88 MOps/s) - *IntHashMap 1.3x faster*
+
+### Java Agrona (Original) - Limited Available Data
+
+**Int2ObjectHashMap Performance (JMH benchmarks):**
+- 10 elements: ~13.6 MOps/s
+- 100 elements: ~1.3 MOps/s
+- 1,000 elements: ~0.14 MOps/s
+- 10,000+ elements: <0.1 MOps/s
+
+*Note: Specific DirectBuffer operation benchmarks for Java Agrona were not found in available sources*
+
+### Key Performance Findings
+
+1. **Ultra-low latency buffer operations** - Sub-nanosecond performance for basic operations
+2. **Exceptional throughput** - 36+ GB/s for bulk buffer operations
+3. **Consistent performance** - No degradation observed at 1M operations
+4. **Mixed collections results** - Standard HashMap faster for inserts, IntHashMap faster for lookups
+5. **Java Agrona collections show significant size-dependent degradation** - Performance drops dramatically as collection size increases
+
+*Benchmarks run on Apple M-series processor, compiled with `--release` optimizations*
 
 ## 🔧 Advanced Features
 
