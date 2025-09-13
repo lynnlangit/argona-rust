@@ -1,0 +1,34 @@
+[package]
+name = "agrona-core"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+keywords.workspace = true
+categories.workspace = true
+description = "High-performance buffer management and utilities for HFT applications - core components"
+
+[dependencies]
+byteorder.workspace = true
+memmap2.workspace = true
+libc.workspace = true
+thiserror.workspace = true
+
+[dev-dependencies]
+criterion.workspace = true
+static_assertions.workspace = true
+
+[[bench]]
+name = "buffer_ops"
+harness = false
+
+[[bench]]
+name = "bit_util"
+harness = false
+
+[features]
+default = ["std"]
+std = []
+no_bounds_check = []

@@ -1,0 +1,27 @@
+[package]
+name = "agrona-concurrent"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+keywords.workspace = true
+categories.workspace = true
+description = "High-performance lock-free data structures and concurrency utilities for HFT applications"
+
+[dependencies]
+agrona-core = { path = "../agrona-core" }
+thiserror.workspace = true
+
+[dev-dependencies]
+criterion.workspace = true
+static_assertions.workspace = true
+
+[[bench]]
+name = "atomic_buffer"
+harness = false
+
+[features]
+default = ["std"]
+std = ["agrona-core/std"]

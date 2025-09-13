@@ -1,0 +1,47 @@
+[workspace]
+members = [
+    "agrona-core",
+    "agrona-collections",
+    "agrona-concurrent",
+    "agrona-examples"
+]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+authors = ["Rust Agrona Contributors"]
+license = "Apache-2.0"
+repository = "https://github.com/your-org/rust-agrona"
+homepage = "https://github.com/your-org/rust-agrona"
+keywords = ["hft", "low-latency", "zero-copy", "lock-free", "performance"]
+categories = ["algorithms", "data-structures", "memory-management", "concurrency"]
+
+[workspace.dependencies]
+# Core dependencies
+byteorder = "1.5"
+memmap2 = "0.9"
+libc = "0.2"
+thiserror = "1.0"
+
+# Benchmarking
+criterion = { version = "0.5", features = ["html_reports"] }
+
+# Development dependencies
+static_assertions = "1.1"
+
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = 3
+panic = "abort"
+strip = true
+
+[profile.bench]
+codegen-units = 1
+lto = true
+opt-level = 3
+debug = true
+
+[profile.dev]
+opt-level = 1

@@ -1,0 +1,33 @@
+[package]
+name = "agrona-examples"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+keywords.workspace = true
+categories.workspace = true
+description = "Usage examples for the Rust Agrona HFT library"
+
+[dependencies]
+agrona-core = { path = "../agrona-core" }
+agrona-collections = { path = "../agrona-collections" }
+agrona-concurrent = { path = "../agrona-concurrent" }
+criterion.workspace = true
+
+[[bin]]
+name = "buffer_operations"
+path = "src/bin/buffer_operations.rs"
+
+[[bin]]
+name = "atomic_operations"
+path = "src/bin/atomic_operations.rs"
+
+[[bin]]
+name = "collections_benchmark"
+path = "src/bin/collections_benchmark.rs"
+
+[features]
+default = ["std"]
+std = ["agrona-core/std", "agrona-collections/std", "agrona-concurrent/std"]
