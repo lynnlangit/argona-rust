@@ -235,16 +235,6 @@ Comprehensive performance testing demonstrates exceptional results for the Rust 
 - HashMap insert: **21.60 ns/op** (46.29 MOps/s) - *1.8x faster than IntHashMap*
 - HashMap lookup: **9.27 ns/op** (107.88 MOps/s) - *IntHashMap 1.3x faster*
 
-### Java Agrona (Original) - Limited Available Data
-
-**Int2ObjectHashMap Performance (JMH benchmarks):**
-- 10 elements: ~13.6 MOps/s
-- 100 elements: ~1.3 MOps/s
-- 1,000 elements: ~0.14 MOps/s
-- 10,000+ elements: <0.1 MOps/s
-
-*Note: Specific DirectBuffer operation benchmarks for Java Agrona were not found in available sources*
-
 ### Key Performance Findings
 
 1. **Ultra-low latency buffer operations** - Sub-nanosecond performance for basic operations
